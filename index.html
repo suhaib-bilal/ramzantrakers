@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramzan Tracker 1446</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1a6b3a;
+  --green2: #2d9a58;
+  --green3: #4cba78;
+  --green4: #a8e6c0;
+  --green5: #d4f5e3;
+  --gold: #c9a84c;
+  --gold2: #f0d080;
+  --white: #ffffff;
+  --offwhite: #f7fdf9;
+  --gray: #e8f5ee;
+  --gray2: #c5dfd0;
+  --text: #0d3320;
+  --text2: #2a5c3f;
+  --shadow: rgba(26,107,58,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Poppins',sans-serif;
+  background: var(--offwhite);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--green) 0%, #0d4a28 50%, #1a3d25 100%);
+  color: white;
+  padding: 28px 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.header::before {
+  content:'';
+  position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.crescent {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 8px rgba(201,168,76,0.6));
+}
+.header h1 {
+  font-family:'Amiri',serif;
+  font-size: clamp(1.6rem,4vw,2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--gold2);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+.header .subtitle {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.name-bar {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.name-bar input {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 30px;
+  color: white;
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  font-family:'Poppins',sans-serif;
+  text-align: center;
+  outline: none;
+  width: 240px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.name-bar input::placeholder { color: rgba(255,255,255,0.5); }
+.name-bar input:focus { background: rgba(255,255,255,0.2); border-color: var(--gold2); }
+.name-display {
+  font-family:'Amiri',serif;
+  font-size: 1.4rem;
+  color: var(--gold2);
+  display: none;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--green);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display:none; }
+.tab {
+  flex: 0 0 auto;
+  padding: 14px 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+.tab:hover { color: white; }
+.tab.active { color: var(--gold2); border-bottom-color: var(--gold2); font-weight: 600; }
+
+/* MAIN CONTENT */
+.main { max-width: 1400px; margin: 0 auto; padding: 24px 16px; }
+
+/* OVERVIEW STATS */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border: 1.5px solid var(--gray2);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+.stat-card .val {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--green);
+  font-family:'Amiri',serif;
+}
+.stat-card .lbl { font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.stat-card .pct { font-size: 0.8rem; color: var(--green3); font-weight: 600; margin-top: 4px; }
+
+/* SECTION PANELS */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ─── PRAYER TABLE ─── */
+.prayer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.prayer-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--green); }
+
+.table-wrapper { overflow-x: auto; border-radius: 16px; box-shadow: 0 4px 24px var(--shadow); }
+table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
+thead tr { background: var(--green); }
+thead th {
+  padding: 13px 10px;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+thead th:first-child { text-align: left; padding-left: 16px; }
+tbody tr { border-bottom: 1px solid var(--gray); transition: background 0.15s; }
+tbody tr:hover { background: var(--green5); }
+tbody tr:last-child { border-bottom: none; }
+.day-cell {
+  padding: 10px 10px 10px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text2);
+  white-space: nowrap;
+  min-width: 90px;
+}
+.day-cell .ramzan-day { font-size: 0.68rem; color: var(--green3); font-weight: 500; }
+.check-cell { text-align: center; padding: 8px 6px; }
+.tick-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 2px solid var(--gray2);
+  background: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.tick-btn:hover { border-color: var(--green3); transform: scale(1.1); }
+.tick-btn.ticked { background: var(--green2); border-color: var(--green); color: white; }
+.row-progress { padding: 8px; }
+.mini-bar {
+  height: 6px; background: var(--gray); border-radius: 3px; overflow: hidden; min-width: 50px;
+}
+.mini-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green2), var(--green3)); border-radius: 3px; transition: width 0.4s; }
+.today-row { background: #f0fdf6 !important; }
+.today-row .day-cell { color: var(--green); }
+
+/* ─── IBADAH SECTION ─── */
+.ibadah-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.ibadah-card {
+  background: white;
+  border: 1.5px solid var(--gray2);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 3px 18px var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.ibadah-card:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(26,107,58,0.18); }
+.ibadah-card .card-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.ibadah-icon {
+  width: 46px; height: 46px;
+  background: linear-gradient(135deg, var(--green5), var(--green4));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  border: 1.5px solid var(--green4);
+  flex-shrink: 0;
+}
+.ibadah-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); }
+.ibadah-card .sub { font-size: 0.75rem; color: var(--text2); margin-top: 1px; }
+
+/* goal setter */
+.goal-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.goal-row label { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+.goal-input {
+  width: 70px;
+  border: 1.5px solid var(--gray2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.88rem;
+  font-family:'Poppins',sans-serif;
+  color: var(--text);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.goal-input:focus { border-color: var(--green2); }
+
+/* circular progress */
+.circ-wrap {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 14px;
+}
+.circ-svg { transform: rotate(-90deg); }
+.circ-track { fill: none; stroke: var(--gray); stroke-width: 8; }
+.circ-fill { fill: none; stroke: var(--green2); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+.circ-fill.gold { stroke: var(--gold); }
+.circ-center { text-align: center; }
+.circ-pct { font-size: 1.5rem; font-weight: 700; color: var(--green); }
+.circ-sub { font-size: 0.7rem; color: var(--text2); }
+
+/* day input grid for ibadah */
+.day-inputs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-top: 10px;
+}
+.day-dot {
+  text-align: center;
+}
+.day-dot span {
+  display: block;
+  font-size: 0.55rem;
+  color: var(--text2);
+  margin-bottom: 2px;
+}
+.day-dot input {
+  width: 100%;
+  border: 1px solid var(--gray2);
+  border-radius: 5px;
+  padding: 4px 2px;
+  font-size: 0.7rem;
+  text-align: center;
+  font-family:'Poppins',sans-serif;
+  outline: none;
+  background: var(--offwhite);
+  transition: border-color 0.2s, background 0.2s;
+}
+.day-dot input:focus { border-color: var(--green3); background: white; }
+.day-dot input.filled { background: var(--green5); border-color: var(--green4); }
+
+/* bar chart */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 70px;
+  padding: 4px 0;
+  margin-top: 10px;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--green3), var(--green2));
+  border-radius: 3px 3px 0 0;
+  min-height: 2px;
+  transition: height 0.4s ease;
+  cursor: default;
+  position: relative;
+}
+.bar:hover::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--green);
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 10;
+}
+.bar-lbl { font-size: 0.5rem; color: var(--text2); }
+
+/* Quran special */
+.ayat-total { 
+  font-size: 0.78rem; 
+  color: var(--text2); 
+  background: var(--green5);
+  border: 1px solid var(--green4);
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-top: 8px;
+  text-align: center;
+}
+.ayat-total strong { color: var(--green); font-size: 1rem; }
+
+/* ─── CHARTS OVERVIEW ─── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.ov-card {
+  background: white;
+  border: 1.5px solid var(--gray2);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 14px var(--shadow);
+}
+.ov-card h4 { font-size: 0.88rem; font-weight: 600; color: var(--text2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.full-bar {
+  display: flex; align-items: flex-end; gap: 2px; height: 80px; overflow: hidden;
+}
+.full-bar .bar { border-radius: 3px 3px 0 0; }
+
+/* progress list */
+.prog-list { display: flex; flex-direction: column; gap: 10px; }
+.prog-row { display: flex; align-items: center; gap: 10px; }
+.prog-row .name { font-size: 0.78rem; width: 100px; color: var(--text2); font-weight: 500; }
+.prog-row .bar-wrap { flex: 1; height: 10px; background: var(--gray); border-radius: 5px; overflow: hidden; }
+.prog-row .bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--green2), var(--green3)); transition: width 0.6s; }
+.prog-row .pct-lbl { font-size: 0.72rem; font-weight: 700; color: var(--green); width: 36px; text-align: right; }
+
+/* streak */
+.streak-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.streak-dot {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  background: var(--gray);
+  transition: background 0.2s;
+  cursor: default;
+  title: '';
+}
+.streak-dot.full { background: var(--green2); }
+.streak-dot.partial { background: var(--green4); }
+
+/* ─── FOOTER ─── */
+.footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 0.75rem;
+  color: var(--text2);
+  border-top: 1px solid var(--gray);
+  margin-top: 32px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .main { padding: 16px 10px; }
+  .ibadah-grid { grid-template-columns: 1fr; }
+  .day-inputs { grid-template-columns: repeat(3, 1fr); }
+  thead th, .check-cell { padding: 8px 4px; }
+  .tick-btn { width: 28px; height: 28px; font-size: 0.85rem; }
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.panel.active { animation: fadeIn 0.3s ease; }
+
+/* Today highlight */
+.today-badge {
+  display: inline-block;
+  background: var(--gold2);
+  color: var(--text);
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <span class="crescent">🌙</span>
+  <h1>Ramzan Kareem Tracker</h1>
+  <div class="subtitle">19 Feb – 19 March 2025 • 30 Days</div>
+  <div class="name-bar">
+    <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="30" oninput="saveName(this.value)">
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('prayers')">🕌 Prayers</div>
+  <div class="tab" onclick="switchTab('ibadah')">📿 Ibadah</div>
+  <div class="tab" onclick="switchTab('overview')">📊 Overview</div>
+</div>
+
+<!-- STATS BAR -->
+<div class="main">
+<div class="stats-bar" id="statsBar">
+  <div class="stat-card"><div class="val" id="stat-day">–</div><div class="lbl">Ramzan Day</div></div>
+  <div class="stat-card"><div class="val" id="stat-prayers">0%</div><div class="lbl">Prayers Done</div><div class="pct" id="stat-prayers-sub"></div></div>
+  <div class="stat-card"><div class="val" id="stat-ibadah">0%</div><div class="lbl">Ibadah Goals</div></div>
+  <div class="stat-card"><div class="val" id="stat-ayats">0</div><div class="lbl">Ayats Read</div></div>
+  <div class="stat-card"><div class="val" id="stat-streak">0</div><div class="lbl">Day Streak</div></div>
+</div>
+
+<!-- ═══════════ PRAYERS PANEL ═══════════ -->
+<div class="panel active" id="panel-prayers">
+  <div class="prayer-header">
+    <h2>🕌 Daily Prayer Tracker</h2>
+    <div style="font-size:0.78rem;color:var(--text2);">Click ✓ to mark each prayer</div>
+  </div>
+  <div class="table-wrapper">
+    <table id="prayerTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>🌅 Fajr</th>
+          <th>🌤️ Zuhr</th>
+          <th>☀️ Asr</th>
+          <th>🌇 Maghrib</th>
+          <th>🌙 Isha</th>
+          <th>🕌 Taraweeh</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody id="prayerBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ IBADAH PANEL ═══════════ -->
+<div class="panel" id="panel-ibadah">
+  <div class="prayer-header">
+    <h2>📿 Daily Ibadah Goals</h2>
+    <div style="font-size:0.78rem;color:var(--text2);">Set daily target & track each day</div>
+  </div>
+  <div class="ibadah-grid" id="ibadahGrid"></div>
+</div>
+
+<!-- ═══════════ OVERVIEW PANEL ═══════════ -->
+<div class="panel" id="panel-overview">
+  <div class="prayer-header"><h2>📊 Overview & Progress</h2></div>
+  <div class="overview-grid" id="overviewGrid">
+    <div class="ov-card">
+      <h4>🕌 Prayer Completion per Day</h4>
+      <div class="full-bar" id="ov-prayer-bar"></div>
+    </div>
+    <div class="ov-card">
+      <h4>📿 Ibadah Goals — Overall %</h4>
+      <div class="prog-list" id="ov-ibadah-prog"></div>
+    </div>
+    <div class="ov-card">
+      <h4>🟩 Prayer Streak (30 days)</h4>
+      <div class="streak-row" id="ov-streak"></div>
+    </div>
+    <div class="ov-card" id="ov-quran-card">
+      <h4>📖 Quran Progress</h4>
+      <div id="ov-quran-detail"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  🌙 Ramadan Mubarak — May Allah accept our prayers and ibadah. آمين
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'ramzan_tracker_2025_v3';
+const START_DATE = new Date(2025, 1, 19); // Feb 19, 2025
+
+const PRAYERS = ['Fajr','Zuhr','Asr','Maghrib','Isha','Taraweeh'];
+const PRAYER_EMOJIS = ['🌅','🌤️','☀️','🌇','🌙','🕌'];
+
+const IBADAH_DEF = [
+  { key:'nawafil',   name:'Nawafil',         icon:'🙏', unit:'rakaat',   hint:'Daily Nawafil target' },
+  { key:'dua',       name:'Dua',             icon:'🤲', unit:'times',    hint:'Times made dua' },
+  { key:'quran',     name:'Quran',           icon:'📖', unit:'ayats',    hint:'Ayats to recite daily', isQuran: true },
+  { key:'azkar',     name:'Azkar',           icon:'📿', unit:'times',    hint:'Azkar rounds' },
+  { key:'durood',    name:'Durood',          icon:'✨', unit:'times',    hint:'Durood count' },
+  { key:'istigfar',  name:'Istigfar',        icon:'💚', unit:'times',    hint:'Istigfar count' },
+  { key:'memorize',  name:'Quran Memorize',  icon:'🧠', unit:'ayats',    hint:'Ayats memorized', isMemorize: true },
+];
+
+// State
+let state = {
+  name: '',
+  prayers: {}, // { 'day-1': { Fajr: true, Zuhr: false, ... } }
+  ibadah: {}, // { nawafil: { goal: 10, days: { 'day-1': 5, ... } } }
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = JSON.parse(raw);
+    // init ibadah keys
+    IBADAH_DEF.forEach(ib => {
+      if (!state.ibadah[ib.key]) state.ibadah[ib.key] = { goal: 10, days: {} };
+    });
+    if (!state.prayers) state.prayers = {};
+    if (!state.name) state.name = '';
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  updateStats();
+}
+
+// ── DATES ────────────────────────────────────────────────────────────────────
+function getDates() {
+  const dates = [];
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(START_DATE);
+    d.setDate(d.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function dayKey(idx) { return `day-${idx+1}`; }
+
+function formatDate(d) {
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', weekday:'short' });
+}
+
+function todayIndex() {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(START_DATE);
+    d.setDate(d.getDate() + i);
+    d.setHours(0,0,0,0);
+    if (d.getTime() === now.getTime()) return i;
+  }
+  return -1;
+}
+
+// ── PRAYER TABLE ──────────────────────────────────────────────────────────────
+function buildPrayerTable() {
+  const tbody = document.getElementById('prayerBody');
+  tbody.innerHTML = '';
+  const dates = getDates();
+  const tIdx = todayIndex();
+
+  dates.forEach((d, i) => {
+    const key = dayKey(i);
+    const row = document.createElement('tr');
+    if (i === tIdx) row.classList.add('today-row');
+
+    const checked = state.prayers[key] || {};
+    const count = PRAYERS.reduce((s, p) => s + (checked[p] ? 1 : 0), 0);
+    const pct = Math.round(count / PRAYERS.length * 100);
+
+    let dateCell = `<td class="day-cell">
+      <div>${formatDate(d)}</div>
+      <div class="ramzan-day">Ramzan Day ${i+1}${i===tIdx?'<span class="today-badge">TODAY</span>':''}</div>
+    </td>`;
+
+    let checkCells = PRAYERS.map(p => {
+      const t = checked[p] ? 'ticked' : '';
+      return `<td class="check-cell">
+        <button class="tick-btn ${t}" onclick="togglePrayer('${key}','${p}',this)" title="${p}">${checked[p]?'✓':'○'}</button>
+      </td>`;
+    }).join('');
+
+    let progressCell = `<td class="row-progress">
+      <div style="font-size:0.68rem;color:var(--text2);margin-bottom:3px;text-align:center;">${count}/6</div>
+      <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+    </td>`;
+
+    row.innerHTML = dateCell + checkCells + progressCell;
+    tbody.appendChild(row);
+  });
+}
+
+function togglePrayer(key, prayer, btn) {
+  if (!state.prayers[key]) state.prayers[key] = {};
+  const val = !state.prayers[key][prayer];
+  state.prayers[key][prayer] = val;
+  btn.classList.toggle('ticked', val);
+  btn.textContent = val ? '✓' : '○';
+  // update mini bar
+  const row = btn.closest('tr');
+  const ticked = row.querySelectorAll('.tick-btn.ticked').length;
+  const pct = Math.round(ticked / PRAYERS.length * 100);
+  row.querySelector('.mini-bar-fill').style.width = pct + '%';
+  row.querySelector('.row-progress div').textContent = ticked + '/6';
+  saveState();
+  if (document.getElementById('panel-overview').classList.contains('active')) buildOverview();
+}
+
+// ── IBADAH SECTION ────────────────────────────────────────────────────────────
+function buildIbadah() {
+  const grid = document.getElementById('ibadahGrid');
+  grid.innerHTML = '';
+  const dates = getDates();
+
+  IBADAH_DEF.forEach(ib => {
+    const data = state.ibadah[ib.key];
+    const goal = data.goal || 10;
+
+    // compute totals
+    let total = 0, maxDay = 0;
+    dates.forEach((d, i) => {
+      const v = parseFloat(data.days[dayKey(i)]) || 0;
+      total += v;
+      if (v > maxDay) maxDay = v;
+    });
+    const target30 = goal * 30;
+    const pct = target30 > 0 ? Math.min(100, Math.round(total / target30 * 100)) : 0;
+    const r = 40, circ = 2 * Math.PI * r;
+    const offset = circ - (pct / 100 * circ);
+
+    const card = document.createElement('div');
+    card.className = 'ibadah-card';
+    card.dataset.key = ib.key;
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="ibadah-icon">${ib.icon}</div>
+        <div><h3>${ib.name}</h3><div class="sub">${ib.hint}</div></div>
+      </div>
+      <div class="goal-row">
+        <label>Daily Goal (${ib.unit}):</label>
+        <input type="number" class="goal-input" min="1" max="9999" value="${goal}" 
+          oninput="setGoal('${ib.key}',this.value)" placeholder="10">
+      </div>
+      <div class="circ-wrap">
+        <svg width="90" height="90" class="circ-svg">
+          <circle class="circ-track" cx="45" cy="45" r="${r}"/>
+          <circle class="circ-fill${ib.isQuran||ib.isMemorize?' gold':''}" cx="45" cy="45" r="${r}"
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" id="circ-${ib.key}"/>
+        </svg>
+        <div class="circ-center">
+          <div class="circ-pct" id="pct-${ib.key}">${pct}%</div>
+          <div class="circ-sub">of 30-day goal</div>
+          <div class="circ-sub" style="margin-top:4px;">Total: <strong style="color:var(--green)">${total}</strong> ${ib.unit}</div>
+        </div>
+      </div>
+      ${ib.isQuran ? `<div class="ayat-total">📖 Total Ayats Read: <strong id="ayat-total-${ib.key}">${total}</strong></div>` : ''}
+      ${ib.isMemorize ? `<div class="ayat-total" style="background:#fff8e6;border-color:#f0d080;">🧠 Total Ayats Memorized: <strong style="color:#a07020" id="ayat-total-${ib.key}">${total}</strong></div>` : ''}
+      <div style="font-size:0.72rem;color:var(--text2);margin:10px 0 4px;">Daily entries (Day 1–30):</div>
+      <div class="day-inputs" id="dayinputs-${ib.key}"></div>
+      <div class="bar-chart" id="bar-${ib.key}"></div>
+    `;
+    grid.appendChild(card);
+
+    // Build day inputs
+    const inputsWrap = card.querySelector(`#dayinputs-${ib.key}`);
+    dates.forEach((d, i) => {
+      const k = dayKey(i);
+      const v = data.days[k] || '';
+      const div = document.createElement('div');
+      div.className = 'day-dot';
+      div.innerHTML = `<span>${i+1}</span><input type="number" min="0" max="99999" value="${v}" 
+        placeholder="0" class="${v?'filled':''}"
+        oninput="setIbadahDay('${ib.key}','${k}',this)">`;
+      inputsWrap.appendChild(div);
+    });
+
+    buildBarChart(ib.key, dates, maxDay);
+  });
+}
+
+function buildBarChart(ibKey, dates, maxDay) {
+  const wrap = document.getElementById(`bar-${ibKey}`);
+  if (!wrap) return;
+  const data = state.ibadah[ibKey];
+  const goal = data.goal || 10;
+  const maxH = Math.max(maxDay, goal, 1);
+
+  wrap.innerHTML = '';
+  dates.forEach((d, i) => {
+    const v = parseFloat(data.days[dayKey(i)]) || 0;
+    const h = Math.round((v / maxH) * 60);
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    col.innerHTML = `<div class="bar" style="height:${h}px" data-val="${v}"></div><div class="bar-lbl">${i+1}</div>`;
+    wrap.appendChild(col);
+  });
+}
+
+function setGoal(key, val) {
+  state.ibadah[key].goal = parseFloat(val) || 10;
+  saveState();
+  refreshIbadahCard(key);
+}
+
+function setIbadahDay(key, dKey, input) {
+  const v = input.value;
+  state.ibadah[key].days[dKey] = v === '' ? undefined : parseFloat(v) || 0;
+  if (v) input.classList.add('filled'); else input.classList.remove('filled');
+  saveState();
+  refreshIbadahCard(key);
+}
+
+function refreshIbadahCard(key) {
+  const dates = getDates();
+  const data = state.ibadah[key];
+  const goal = data.goal || 10;
+  let total = 0, maxDay = 0;
+  dates.forEach((d, i) => {
+    const v = parseFloat(data.days[dayKey(i)]) || 0;
+    total += v;
+    if (v > maxDay) maxDay = v;
+  });
+  const target30 = goal * 30;
+  const pct = target30 > 0 ? Math.min(100, Math.round(total / target30 * 100)) : 0;
+  const r = 40, circ = 2 * Math.PI * r;
+  const offset = circ - (pct / 100 * circ);
+
+  const circEl = document.getElementById(`circ-${key}`);
+  const pctEl = document.getElementById(`pct-${key}`);
+  const ayatEl = document.getElementById(`ayat-total-${key}`);
+  if (circEl) circEl.style.strokeDashoffset = offset;
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (ayatEl) ayatEl.textContent = total;
+  buildBarChart(key, dates, maxDay);
+  updateStats();
+  if (document.getElementById('panel-overview').classList.contains('active')) buildOverview();
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+function buildOverview() {
+  const dates = getDates();
+  const tIdx = todayIndex();
+
+  // Prayer bar
+  const prayerBar = document.getElementById('ov-prayer-bar');
+  prayerBar.innerHTML = '';
+  const maxPray = PRAYERS.length;
+  dates.forEach((d, i) => {
+    const key = dayKey(i);
+    const checked = state.prayers[key] || {};
+    const count = PRAYERS.reduce((s, p) => s + (checked[p] ? 1 : 0), 0);
+    const h = Math.round((count / maxPray) * 70);
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    const isToday = i === tIdx ? 'style="background:linear-gradient(180deg,var(--gold),var(--gold2))"' : '';
+    col.innerHTML = `<div class="bar" ${isToday} style="height:${h}px" data-val="${count}/${maxPray}"></div><div class="bar-lbl">${i+1}</div>`;
+    prayerBar.appendChild(col);
+  });
+
+  // Ibadah progress list
+  const progList = document.getElementById('ov-ibadah-prog');
+  progList.innerHTML = '';
+  IBADAH_DEF.forEach(ib => {
+    const data = state.ibadah[ib.key];
+    const goal = data.goal || 10;
+    let total = 0;
+    dates.forEach((d, i) => { total += parseFloat(data.days[dayKey(i)]) || 0; });
+    const target30 = goal * 30;
+    const pct = target30 > 0 ? Math.min(100, Math.round(total / target30 * 100)) : 0;
+    progList.innerHTML += `<div class="prog-row">
+      <div class="name">${ib.icon} ${ib.name}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="pct-lbl">${pct}%</div>
+    </div>`;
+  });
+
+  // Streak
+  const streakRow = document.getElementById('ov-streak');
+  streakRow.innerHTML = '';
+  dates.forEach((d, i) => {
+    const key = dayKey(i);
+    const checked = state.prayers[key] || {};
+    const count = PRAYERS.reduce((s, p) => s + (checked[p] ? 1 : 0), 0);
+    const cls = count === PRAYERS.length ? 'full' : count > 0 ? 'partial' : '';
+    const dot = document.createElement('div');
+    dot.className = `streak-dot ${cls}`;
+    dot.title = `Day ${i+1}: ${count}/${PRAYERS.length} prayers`;
+    streakRow.appendChild(dot);
+  });
+
+  // Quran detail
+  const quranData = state.ibadah['quran'];
+  const memData = state.ibadah['memorize'];
+  const qGoal = quranData.goal || 10;
+  let qTotal = 0, mTotal = 0;
+  dates.forEach((d, i) => {
+    qTotal += parseFloat(quranData.days[dayKey(i)]) || 0;
+    mTotal += parseFloat(memData.days[dayKey(i)]) || 0;
+  });
+  const qPct = Math.min(100, Math.round(qTotal / (qGoal * 30) * 100));
+  document.getElementById('ov-quran-detail').innerHTML = `
+    <div style="display:flex;gap:20px;margin-bottom:12px;">
+      <div style="text-align:center;flex:1;background:var(--green5);padding:14px;border-radius:12px;border:1.5px solid var(--green4)">
+        <div style="font-size:1.6rem;font-weight:700;color:var(--green)">${qTotal}</div>
+        <div style="font-size:0.7rem;color:var(--text2)">Ayats Recited</div>
+      </div>
+      <div style="text-align:center;flex:1;background:#fff8e6;padding:14px;border-radius:12px;border:1.5px solid #f0d080">
+        <div style="font-size:1.6rem;font-weight:700;color:#a07020">${mTotal}</div>
+        <div style="font-size:0.7rem;color:var(--text2)">Ayats Memorized</div>
+      </div>
+    </div>
+    <div class="prog-list">
+      <div class="prog-row">
+        <div class="name">📖 Recitation</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${qPct}%"></div></div>
+        <div class="pct-lbl">${qPct}%</div>
+      </div>
+      <div class="prog-row">
+        <div class="name">🧠 Memorize</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${Math.min(100,Math.round(mTotal/(memData.goal||5)*30*100))}%;background:linear-gradient(90deg,#c9a84c,#f0d080)"></div></div>
+        <div class="pct-lbl">${Math.min(100,Math.round(mTotal/((memData.goal||5)*30)*100))}%</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── STATS BAR ──────────────────────────────────────────────────────────────
+function updateStats() {
+  const tIdx = todayIndex();
+  const dates = getDates();
+  document.getElementById('stat-day').textContent = tIdx >= 0 ? tIdx + 1 : '–';
+
+  // Prayer %
+  let totalPrayer = 0, maxPrayer = 0;
+  let streak = 0, tempStreak = 0;
+  dates.forEach((d, i) => {
+    const key = dayKey(i);
+    const checked = state.prayers[key] || {};
+    const count = PRAYERS.reduce((s, p) => s + (checked[p] ? 1 : 0), 0);
+    totalPrayer += count;
+    maxPrayer += PRAYERS.length;
+    if (count === PRAYERS.length) { tempStreak++; streak = Math.max(streak, tempStreak); }
+    else tempStreak = 0;
+  });
+  const prayerPct = maxPrayer > 0 ? Math.round(totalPrayer / maxPrayer * 100) : 0;
+  document.getElementById('stat-prayers').textContent = prayerPct + '%';
+  document.getElementById('stat-prayers-sub').textContent = `${totalPrayer}/${maxPrayer}`;
+
+  // Ibadah avg %
+  let ibPcts = [];
+  IBADAH_DEF.forEach(ib => {
+    const data = state.ibadah[ib.key];
+    const goal = data.goal || 10;
+    let total = 0;
+    dates.forEach((d, i) => { total += parseFloat(data.days[dayKey(i)]) || 0; });
+    ibPcts.push(Math.min(100, total / (goal * 30) * 100));
+  });
+  const ibadahPct = Math.round(ibPcts.reduce((a,b)=>a+b,0)/ibPcts.length);
+  document.getElementById('stat-ibadah').textContent = ibadahPct + '%';
+
+  // Ayats
+  let ayats = 0;
+  dates.forEach((d, i) => { ayats += parseFloat(state.ibadah['quran'].days[dayKey(i)]) || 0; });
+  document.getElementById('stat-ayats').textContent = ayats;
+
+  document.getElementById('stat-streak').textContent = streak + (streak > 0 ? '🔥' : '');
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const tabs = document.querySelectorAll('.tab');
+  const labels = ['prayers','ibadah','overview'];
+  tabs[labels.indexOf(name)].classList.add('active');
+  document.getElementById(`panel-${name}`).classList.add('active');
+  if (name === 'overview') buildOverview();
+}
+
+// ── NAME ─────────────────────────────────────────────────────────────────────
+function saveName(val) {
+  state.name = val;
+  saveState();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadState();
+document.getElementById('nameInput').value = state.name || '';
+
+// init ibadah state
+IBADAH_DEF.forEach(ib => {
+  if (!state.ibadah[ib.key]) state.ibadah[ib.key] = { goal: 10, days: {} };
+});
+
+buildPrayerTable();
+buildIbadah();
+updateStats();
+
+// Scroll to today
+setTimeout(() => {
+  const tIdx = todayIndex();
+  if (tIdx >= 0) {
+    const rows = document.querySelectorAll('#prayerBody tr');
+    if (rows[tIdx]) rows[tIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}, 400);
+</script>
+</body>
+</html>
